@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthenticationService } from './authentication.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'busara';
+  title = 'Busara';
+
+  
+  constructor(private authService: AuthenticationService) { }
+
+  isLoggedIn: Boolean;
+
+  ngOnInit(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
+  }
 }
