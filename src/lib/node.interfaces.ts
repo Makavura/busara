@@ -7,9 +7,13 @@ export interface TreeNodeSection {
     depth: number;
     description: string;
     name: string
-    questions: [TreeNodeSectionQuestion]
+    id: number;
+    sections: [ TreeNodeSectionQuestions ]
 }
 
+export interface TreeNodeSectionQuestions {
+    questions: [ TreeNodeSectionQuestion ]
+}
 export interface TreeNodeSectionQuestion {
     column_match: string;
     created: string;
@@ -19,6 +23,7 @@ export interface TreeNodeSectionQuestion {
     type: string;
     is_visible: Boolean;
     id: number;
+    q_options: [ Q_Option ]
 }
 
 /* 
@@ -49,4 +54,10 @@ export interface ResponseSubmissionAns {
     column_match: string;
     q_ans: string;
     q_id: string;
+}
+
+export interface Q_Option {
+    id: number;
+    name: string;
+    sort_order: number;
 }
