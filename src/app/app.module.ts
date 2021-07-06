@@ -19,7 +19,6 @@ import { HttpJwtInterceptor } from './http.interceptor';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { SurveysComponent } from './surveys/surveys.component';
 
-import { TreeModule } from '@circlon/angular-tree-component';
 
 @NgModule({
   declarations: [
@@ -38,7 +37,6 @@ import { TreeModule } from '@circlon/angular-tree-component';
     ReactiveFormsModule,
     BrowserAnimationsModule, // required animations module
     ToastrModule.forRoot(), // ToastrModule added
-    TreeModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpJwtInterceptor, multi: true }
