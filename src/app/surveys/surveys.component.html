@@ -22,11 +22,8 @@
                 </p>    
             </div>
 
-            <div  class="px-4 py-5 sm:px-6">
-                <tree-root [nodes]="_form?.pages" [options]="options" (toggleExpanded)="onEvent($event)"
-                (activate)="onEvent($event)"
-                (focus)="onEvent($event)"
-                (blur)="onEvent($event)"></tree-root>
+            <div  class="" [innerHTML]="nodeSections">
+                
             </div>            
         </div>
     </div>
