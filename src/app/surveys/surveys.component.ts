@@ -31,10 +31,17 @@ export class SurveysComponent implements OnInit{
     if(this.elementRef.nativeElement.contains(event.target)){
       if(event.target instanceof Element) {
         if((event.target as Element).classList.contains("tree-node-toggler")){
+          console.log((event.target as Element).id);
           let treeNodeSections: HTMLCollectionOf<Element> = document.getElementsByClassName("tree-node-section"); 
           for(const treeNode of treeNodeSections) {
             if(treeNode.id === (event.target as Element).id) {
-              this.renderer.setStyle(treeNode, "display", "none");
+              if(treeNode.getAttribute("style") !== null && treeNode.getAttribute("style") == "display: none;") {
+                this.renderer.setStyle(treeNode, "display", "block");
+              } else if(treeNode.getAttribute("style") == null) {
+                this.renderer.setStyle(treeNode, "display", "block");
+              } else if(treeNode.getAttribute("style") !== null && treeNode.getAttribute("style") == "display: block;") {
+                 this.renderer.setStyle(treeNode, "display", "none");
+              }
             }
           }
         }
