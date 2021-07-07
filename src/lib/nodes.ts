@@ -57,7 +57,7 @@ export class TreeProcessor {
                         let radio_options = mapRadioOptions(question.q_options, question.column_match);
                         _ = `
 
-                        <fieldset id="${guid}" class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                        <fieldset id="${guid}" class="px-4 py-5 bg-white space-x-6 sm:px-6">
                             <div>
                                 <legend class="text-base font-medium text-gray-900">${question.description}</legend>
                                 <p class="text-sm text-gray-500">${question.text}</p>
@@ -75,7 +75,7 @@ export class TreeProcessor {
 
                         _ = `
                         <div  id="${guid}">
-                             <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                             <div class="px-4 py-1 bg-white space-x-6 sm:px-6">
                                 <div class="flex flex-col">
                                     <div class="col-span-3 sm:col-span-2">
                                         <label for="company-website" class="block text-sm font-medium text-gray-700">
@@ -91,7 +91,7 @@ export class TreeProcessor {
                                         </span>
                                         <input type="text" name="company-website" id="${question.column_match}" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300" placeholder="${question.text}">
                                     </div>
-                                    <span class="text-xs text-red-300">
+                                    <span class="text-xs text-red-300 py-2">
                                     ${question.error_message}
                                     </span>
                                 </div>
@@ -105,7 +105,7 @@ export class TreeProcessor {
 
                         _ = `
                         <div  id="${guid}">
-                             <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                             <div class="px-4 py-1 bg-white space-x-6 sm:px-6">
                                 <div class="flex flex-col">
                                     <div class="col-span-3 sm:col-span-2">
                                         <label for="company-website" class="block text-sm font-medium text-gray-700">
@@ -120,7 +120,7 @@ export class TreeProcessor {
                                         </span>
                                         <input type="tel" name="${question.description}" id="${question.column_match}" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300" placeholder="${question.text}">
                                     </div>
-                                    <span class="text-xs text-red-300">
+                                    <span class="text-xs text-red-300 py-2">
                                             ${question.error_message}
                                     </span>
                                 </div>
@@ -145,6 +145,7 @@ export class TreeProcessor {
 
     renderCollapsibleNodeSection(section: TreeNodeSection) {
         let collapsibleNodeSectionContent: TreeNodeSection = section;
+        let guid = Guid.newGuid();
         const differentDescriptionFromName = () => {
             /* 
             Bug? - Descripiton.length !== name.length when  visually Descripiton.length == name.length. WHY???
@@ -161,11 +162,17 @@ export class TreeProcessor {
         let collapsibleHtmlSectionQuestionsContent = this.renderCollapsibleNodeSectionQuestions(section.sections[0].questions);
         let htmlSectionContent = `
         <div class="border  m-5 py-5  bg-white shadow overflow-hidden sm:rounded-lg">
-            <button id="collapsible-button"
-                class="border border-b-2 shadow-sm text-sm ml-2 px-2 ml-4 font-medium rounded-md py-2 hover:bg-blue-300">
-                ${collapsibleNodeSectionContent.name}
-            </button>
-            <div class="content p-4 text-sm">
+
+            <div class="flex content-start " id="${guid}" #toggleButton>                    
+                    <svg xmlns="http://www.w3.org/2000/svg" id="${guid}" #toggleButton class="h-6 w-6 ml-5 mr-2 fill-current text-green-600 tree-node-toggler" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                    </svg>
+                <div class="">
+                    ${collapsibleNodeSectionContent.name}
+                </div>
+            </div>
+            
+            <div class="content  tree-node-section p-4 text-sm" id="${guid}" #nodeSection>
                <p> 
 
                </p>
