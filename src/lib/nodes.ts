@@ -47,7 +47,7 @@ export class TreeProcessor {
                     q_options.map((q_option: Q_Option) => {
                         listed_radio_q_options = listed_radio_q_options + `
                         <div class="flex items-center">
-                            <input id="${q_option.id}" name="${radioOptionName}" ngModel #radioInput data-column_match="${question.column_match}" data-q_id="${question.id}" type="radio" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                            <input id="${q_option.id}" name="${radioOptionName}" data-column_match="${question.column_match}" data-q_id="${question.id}" type="radio" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
                             <label for="${q_option.name}" class="ml-3 block text-sm font-medium text-gray-700">
                                 ${q_option.name}
                             </label>
@@ -102,7 +102,7 @@ export class TreeProcessor {
                                             <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
                                         </svg>
                                         </span>
-                                        <input ngModel #textInput type="text" name="company-website" data-column_match="${question.column_match}" data-q_id="${question.id}"  id="${question.column_match}" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300" placeholder="${question.text}">
+                                        <input type="text" name="company-website" data-column_match="${question.column_match}" data-q_id="${question.id}"  id="${question.column_match}" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300" placeholder="${question.text}">
                                     </div>
                                     <span class="text-xs text-red-300 py-2">
                                     ${question.error_message}
@@ -131,7 +131,7 @@ export class TreeProcessor {
                                                 <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                                             </svg>
                                         </span>
-                                        <input ngModel #telInput type="tel" name="${question.description}" id="${question.column_match}" data-column_match="${question.column_match}" data-q_id="${question.id}" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300" placeholder="${question.text}">
+                                        <input type="tel" name="${question.description}" id="${question.column_match}" data-column_match="${question.column_match}" data-q_id="${question.id}" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300" placeholder="${question.text}">
                                     </div>
                                     <span class="text-xs text-red-300 py-2">
                                             ${question.error_message}
@@ -178,7 +178,7 @@ export class TreeProcessor {
 
             <div class="flex content-start" id="${guid}">    
 
-                    <svg xmlns="http://www.w3.org/2000/svg" id="${guid}" #toggleButton class="h-6 w-6 ml-5 mr-2 fill-current text-green-600 tree-node-toggler" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="${guid}"  class="h-6 w-6 ml-5 mr-2 fill-current text-green-600 tree-node-toggler" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
                     </svg>
 
@@ -190,10 +190,10 @@ export class TreeProcessor {
 
             
             
-            <div class="content  tree-node-section p-4 text-sm" id="${guid}" #nodeSection style="display: none;" #questionSection>
+            <div class="content  tree-node-section p-4 text-sm" id="${guid}"  style="display: none;" #questionSection>
 
                 <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                    <button #startSurvey  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button   class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Begin Survey
                     </button>
                 </div>
@@ -221,7 +221,7 @@ export class TreeProcessor {
                 </div>
 
                 <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                    <button #submitSurvey  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Submit Survey
                     </button>
                 </div>
