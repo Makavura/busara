@@ -87,6 +87,27 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         };
 
+        /* 
+        
+        Survey filling initiation
+
+        Based on the following premises: 
+        - that user's are aware that survey prescanning is not part of flow
+        - Time taken to fill survey is valuable if reflects accurately the time taken to read, comprehend and react to survey - then submit
+        */
+        if ((event.target as Element).classList.contains("begin-survey")) {
+          let surveyFormSections: HTMLCollectionOf<Element> = document.getElementsByClassName("survey-form-section");
+          for(const surveyFormSection of surveyFormSections){
+            if(surveyFormSection.id === (event.target as Element).id){
+              if(surveyFormSection.classList.contains("opacity-25")) {
+                surveyFormSection.classList.remove("opacity-25");
+              } else {
+                surveyFormSection.classList.add("opacity-25");
+              };
+            };
+          };
+        };
+
       };
 
     });

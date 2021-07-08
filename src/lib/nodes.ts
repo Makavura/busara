@@ -193,38 +193,42 @@ export class TreeProcessor {
             <div class="content  tree-node-section p-4 text-sm" id="${guid}"  style="display: none;" #questionSection>
 
                 <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                    <button   class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button id="${guid}"  class="begin-survey inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Begin Survey
                     </button>
                 </div>
 
-               <div class="">
-                    <p> 
-                        <span>
-                            Number of Questions: 
-                        </span>
-                        ${collapsibleNodeSectionContent.sections[0].questions.length}
-                    </p>
-                    <p> 
-                        <span>
-                            Created On: 
-                        </span>
-                            ${date}
-                    </p>
-               </div>
-               <div class="">
-                    <div class="mt-5 md:mt-0">
-                        <form id="${collapsibleNodeSectionContent.id}" class="shadow-lg sm:rounded-md sm:overflow-hidden" >
-                            ${collapsibleHtmlSectionQuestionsContent}
-                        </form>
+               <div class="survey-form-section opacity-25" id="${guid}">
+                    <div class="">
+                            <p> 
+                                <span>
+                                    Number of Questions: 
+                                </span>
+                                ${collapsibleNodeSectionContent.sections[0].questions.length}
+                            </p>
+                            <p> 
+                                <span>
+                                    Created On: 
+                                </span>
+                                    ${date}
+                            </p>
+                    </div>
+                    <div class="">
+                            <div class="mt-5 md:mt-0">
+                                <form id="${collapsibleNodeSectionContent.id}" class="shadow-lg sm:rounded-md sm:overflow-hidden" >
+                                    ${collapsibleHtmlSectionQuestionsContent}
+                                </form>
+                            </div>
+                    </div>
+                    <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                        <button id="${guid}"  class="submit-survey inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Submit Survey
+                        </button>
                     </div>
                 </div>
 
-                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                    <button  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Submit Survey
-                    </button>
-                </div>
+
+               
             </div>
 
         </div>    
