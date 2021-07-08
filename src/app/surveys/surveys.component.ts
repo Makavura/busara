@@ -19,8 +19,7 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
   private startSurveyListener: () => void;
   private inputListener: () => void;
 
-  surveyAnswers = [];
-  surveyBeginTime;
+  surveyAnswers: SurveyAnswer[];
 
   constructor(
     private http: HttpClient,
@@ -101,12 +100,49 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
             if(surveyFormSection.id === (event.target as Element).id){
               if(surveyFormSection.classList.contains("opacity-25")) {
                 surveyFormSection.classList.remove("opacity-25");
-              } else {
-                surveyFormSection.classList.add("opacity-25");
-              };
+                let surveyAnswersObject:SurveyAnswer = {
+                  ans: undefined,
+                  endTime: undefined,
+                  local_id: undefined,
+                  location: {
+                    accuracy: undefined,
+                    lat: undefined,
+                    lon: undefined
+                  },
+                  start_time: Date.now().toString(),
+                  survey_id: surveyFormSection.getAttribute('data-section-id')
+                }
+                if(!this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveyFormSection.getAttribute('data-section-id'))){
+                  this.surveyAnswers = this.surveyAnswers.concat(surveyAnswersObject);
+                };
+              }
             };
           };
         };
+
+        /* 
+        Survey Submission Event
+        */
+
+        if ((event.target as Element).classList.contains("begin-survey")) { 
+          let surveySubmissionTriggers: HTMLCollectionOf<Element> = document.getElementsByClassName("submit-survey");
+          for(const surveySubmissionTrigger of surveySubmissionTriggers){ 
+            if(surveySubmissionTrigger.id === (event.target as Element).id) {
+              /* 
+              Collect Submission 
+              */
+              if(this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveySubmissionTrigger.getAttribute('data-section-id'))){
+                const surveyAnswersObjectIndex = this.surveyAnswers.findIndex(surveyAnswer => surveyAnswer.survey_id === surveySubmissionTrigger.getAttribute('data-section-id'));
+                if(surveyAnswersObjectIndex > -1){
+                  this.surveyAnswers[surveyAnswersObjectIndex].endTime = Date.now().toString();
+                  this.answerSurvey(this.surveyAnswers[surveyAnswersObjectIndex]);
+                } else {
+                  console.warn(`cannot find survey submission answer after initiation`);
+                }
+              };
+            }
+          }
+        }
 
       };
 
@@ -133,8 +169,8 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
   
   */
 
-  answerSurvey() {
-
+  answerSurvey(surveyResponse: SurveyAnswer) {
+    console.log(surveyResponse);
   }
 
   ngOnDestroy() {
