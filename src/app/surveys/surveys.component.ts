@@ -15,11 +15,10 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
   isLoading: Boolean;
   options: {};
   nodeSections;
+  surveyAnswers: SurveyAnswer[] = [];
 
   private startSurveyListener: () => void;
   private inputListener: () => void;
-
-  surveyAnswers: SurveyAnswer[];
 
   constructor(
     private http: HttpClient,
@@ -48,12 +47,12 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
 
       if (event.target instanceof HTMLElement) {
         // console.log(event.target);
-        console.log((event.target as Element).classList.contains("tree-parent"));
+        console.log((event.target as Element).classList.contains("tree-parent"), (event.target as Element).classList.contains("submit-survey"));
         /* 
         Node Tree Toggling
         */
 
-        if ((event.target as Element).classList.contains("tree-parent")) {
+        if ((event.target as Element).classList.contains("tree-parent") && !(event.target as Element).classList.contains("submit-survey") ) {
 
           /* 
           Render tree section
@@ -89,6 +88,7 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
         /* 
         
         Survey filling initiation
+        Disable button
 
         Based on the following premises: 
         - that user's are aware that survey prescanning is not part of flow
@@ -112,10 +112,14 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
                   start_time: Date.now().toString(),
                   survey_id: surveyFormSection.getAttribute('data-section-id')
                 }
+                console.log("DA", surveyFormSection.getAttribute('data-section-id'))
                 if(!this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveyFormSection.getAttribute('data-section-id'))){
                   this.surveyAnswers = this.surveyAnswers.concat(surveyAnswersObject);
                 };
-              }
+                this.renderer.setStyle((event.target as Element), "pointer-events", "none");
+                (event.target as Element).classList.remove("bg-indigo-600");
+                (event.target as Element).classList.add("bg-gray-200");
+              } 
             };
           };
         };
@@ -124,17 +128,24 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
         Survey Submission Event
         */
 
-        if ((event.target as Element).classList.contains("begin-survey")) { 
+        if ((event.target as Element).classList.contains("submit-survey")) { 
           let surveySubmissionTriggers: HTMLCollectionOf<Element> = document.getElementsByClassName("submit-survey");
           for(const surveySubmissionTrigger of surveySubmissionTriggers){ 
             if(surveySubmissionTrigger.id === (event.target as Element).id) {
+              console.log(event.target)
+              console.table(this.surveyAnswers);
               /* 
               Collect Submission 
+              Disable Button
               */
               if(this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveySubmissionTrigger.getAttribute('data-section-id'))){
                 const surveyAnswersObjectIndex = this.surveyAnswers.findIndex(surveyAnswer => surveyAnswer.survey_id === surveySubmissionTrigger.getAttribute('data-section-id'));
+                console.log("FOUND", surveyAnswersObjectIndex)
                 if(surveyAnswersObjectIndex > -1){
-                  this.surveyAnswers[surveyAnswersObjectIndex].endTime = Date.now().toString();
+                  this.surveyAnswers[surveyAnswersObjectIndex].endTime = Date.now().toString();                  
+                  this.renderer.setStyle((event.target as Element), "pointer-events", "none");
+                  (event.target as Element).classList.remove("bg-indigo-600");
+                  (event.target as Element).classList.add("bg-gray-200");
                   this.answerSurvey(this.surveyAnswers[surveyAnswersObjectIndex]);
                 } else {
                   console.warn(`cannot find survey submission answer after initiation`);
