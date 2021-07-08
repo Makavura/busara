@@ -1,55 +1,33 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, ElementRef, HostListener, OnInit,Renderer2,ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgxSpinnerService } from "ngx-spinner";
 import { TreeProcessor } from '../../lib/nodes';
-import { TreeNodeRenderingService } from '../../lib/node.tree.services';
 
 @Component({
   selector: 'app-surveys',
   templateUrl: './surveys.component.html',
   styleUrls: ['./surveys.component.css']
 })
-export class SurveysComponent implements OnInit{
+export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
+
   forms: any;
   isLoading: Boolean;
   options: {};
   nodeSections;
 
+  private startSurveyListener: () => void;
+  private inputListener: () => void;
+
+  surveyAnswers = [];
+  surveyBeginTime;
+
   constructor(
     private http: HttpClient,
     private spinner: NgxSpinnerService,
     private sanitizer: DomSanitizer,
-    private elementRef: ElementRef,
     private renderer: Renderer2
-  ) {  }
-
-  @ViewChild('toggleButton') toggleButton: ElementRef;
-  @ViewChild('nodeSection') nodeSection: ElementRef;
-  @HostListener('document: click', ['$event'])
-  onGlobalClick(event: Event): void {
-    if(this.elementRef.nativeElement.contains(event.target)){
-      if(event.target instanceof Element) {
-        if((event.target as Element).classList.contains("tree-node-toggler")){
-          let treeNodeSections: HTMLCollectionOf<Element> = document.getElementsByClassName("tree-node-section"); 
-          for(const treeNode of treeNodeSections) {
-            if(treeNode.id === (event.target as Element).id) {
-              if(treeNode.getAttribute("style") !== null && treeNode.getAttribute("style") == "display: none;") {
-                this.renderer.setStyle(treeNode, "display", "block");
-                event.target.classList.add("rotate-90");
-              } else if(treeNode.getAttribute("style") == null) {
-                this.renderer.setStyle(treeNode, "display", "block");
-                event.target.classList.add("rotate-90");
-              } else if(treeNode.getAttribute("style") !== null && treeNode.getAttribute("style") == "display: block;") {
-                 this.renderer.setStyle(treeNode, "display", "none");
-                 event.target.classList.remove("rotate-90");
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+  ) { }
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -65,4 +43,117 @@ export class SurveysComponent implements OnInit{
 
   }
 
+  ngAfterViewInit() {
+
+    this.startSurveyListener = this.renderer.listen(document, 'click', event => {
+
+      if (event.target instanceof HTMLElement) {
+        // console.log(event.target);
+        console.log((event.target as Element).classList.contains("tree-parent"));
+        /* 
+        Node Tree Toggling
+        */
+
+        if ((event.target as Element).classList.contains("tree-parent")) {
+
+          /* 
+          Render tree section
+          */
+          let treeNodeSections: HTMLCollectionOf<Element> = document.getElementsByClassName("tree-node-section");
+          for (const treeNode of treeNodeSections) {
+            if (treeNode.id === (event.target as Element).id) {
+              if (treeNode.getAttribute("style") !== null && treeNode.getAttribute("style") == "display: none;") {
+                this.renderer.setStyle(treeNode, "display", "block");
+              } else if (treeNode.getAttribute("style") == null) {
+                this.renderer.setStyle(treeNode, "display", "block");
+              } else if (treeNode.getAttribute("style") !== null && treeNode.getAttribute("style") == "display: block;") {
+                this.renderer.setStyle(treeNode, "display", "none");
+              }
+            };
+          };
+
+          /* 
+          Toggle SVG to show status of viewing section
+          */
+          let nodeTogglers: HTMLCollectionOf<Element> = document.getElementsByClassName("tree-node-toggler");
+          for(const nodeToggler of nodeTogglers) {
+            if(nodeToggler.id === (event.target as Element).id){  
+              if(nodeToggler.classList.contains("rotate-90")){
+                nodeToggler.classList.remove("rotate-90");
+              } else {
+                nodeToggler.classList.add("rotate-90");
+              }
+            }
+          }
+        };
+
+      };
+
+    });
+
+    this.inputListener = this.renderer.listen(document, 'change', event => {
+
+      if (event.target instanceof HTMLElement) {
+        console.log(event.target);
+      };
+
+    });
+
+  }
+
+  /* 
+  
+  Logic - RoadMap
+
+  1. Log survey time - Initaite survey asnwer => disable form view, button- start survey, 
+    which removes shadow form view
+  2. Map inputs to submissionEntry - use data attributes
+  3. submit answer method
+  
+  */
+
+  answerSurvey() {
+
+  }
+
+  ngOnDestroy() {
+    this.startSurveyListener();
+    this.inputListener();
+  }
+
+}
+
+interface SurveyAnswer {
+  ans: [
+    QuestionAnswer
+  ];
+  endTime: string;
+  local_id: number;
+  location: {
+    accuracy: number,
+    lat: number,
+    lon: number
+  };
+  start_time: string;
+  survey_id: string;
+}
+
+interface QuestionAnswer {
+  /* 
+  
+  pages
+    - sections
+        - questions [] source of data attribute
+
+        set data attributes
+          data-column_match
+          data-q_id
+          data-q_ans - Not needed - populated from innerHTML
+
+        while populating form HTML
+
+  */
+  column_match: string;
+  q_ans: string;
+  q_id: string;
 }
