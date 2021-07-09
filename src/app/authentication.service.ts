@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from '@angular/common/http';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ import { map } from 'rxjs/operators';
 export class AuthenticationService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) { }
 
   login(email: string, password: string) {
@@ -41,6 +43,7 @@ export class AuthenticationService {
   logout() {
     localStorage.removeItem("access_token");
     localStorage.removeItem("expires_at");
+    this.router.navigate(['/login'])
   }
 
   public isLoggedIn() {

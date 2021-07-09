@@ -188,9 +188,6 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
         if exists
         update q_ans
         */
-
-        console.log((event.target as Element).getAttribute("type"))
-
         let answerObject: ResponseSubmissionAns = {
           q_ans: event.target.value,
           q_id: (event.target as Element).getAttribute('data-q-id'),
