@@ -47,7 +47,7 @@ export class TreeProcessor {
                     q_options.map((q_option: Q_Option) => {
                         listed_radio_q_options = listed_radio_q_options + `
                         <div class="flex items-center">
-                            <input id="${q_option.id}" data-section-id="${section_id}" name="${radioOptionName}" data-column-match="${question.column_match}" data-q-id="${question.id}" type="radio" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                            <input id="${q_option.id}" data-section-id="${section_id}" name="${radioOptionName}" data-column-match="${question.column_match}" data-q-id="${q_option.id}" type="radio" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
                             <label for="${q_option.name}" class="ml-3 block text-sm font-medium text-gray-700">
                                 ${q_option.name}
                             </label>

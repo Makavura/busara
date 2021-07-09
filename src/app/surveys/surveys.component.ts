@@ -111,7 +111,8 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
                     lon: undefined
                   },
                   start_time: moment().format(),
-                  survey_id: surveyFormSection.getAttribute('data-section-id')
+                  survey_id: surveyFormSection.getAttribute('data-section-id'),
+                  user: 16
                 }
 
                 if (navigator.geolocation) {
@@ -189,11 +190,18 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
         update q_ans
         */
 
+        console.log((event.target as Element).getAttribute("type"))
+
         let answerObject: ResponseSubmissionAns = {
           q_ans: event.target.value,
           q_id: (event.target as Element).getAttribute('data-q-id'),
           column_match: (event.target as Element).getAttribute('data-column-match')
         }
+
+        if((event.target as Element).getAttribute("type") == "radio") {
+          answerObject.q_ans = (event.target as Element).getAttribute("data-q-id");
+        }
+
         let inputErrorMsgWarnings: HTMLCollectionOf<Element> = document.getElementsByClassName("error-msg");
 
         if (event.target.value.length < 1) {
@@ -259,7 +267,11 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
     let surveyResponseSubmission = [];
     surveyResponseSubmission = surveyResponseSubmission.concat(surveyResponse);
     console.log(surveyResponseSubmission);
-    this.http.post(`http://fullstack-role.busara.io/api/v1/recruitment/answers/submit`, JSON.parse(JSON.stringify(surveyResponseSubmission))).subscribe((response) => {
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json",
+    });
+    this.http.post(`http://fullstack-role.busara.io/api/v1/recruitment/answers/submit/`, 
+    surveyResponseSubmission, { headers: headers }).subscribe((response) => {
       console.log(response);
     },
       (err) => {
@@ -291,6 +303,7 @@ interface SurveyAnswer {
   };
   start_time: string;
   survey_id: string;
+  user: number;
 }
 
 interface QuestionAnswer {
