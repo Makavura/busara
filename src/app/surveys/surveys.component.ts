@@ -16,7 +16,7 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
   isLoading: Boolean;
   options: {};
   nodeSections;
-  surveyAnswers: SurveyAnswer[] = [];
+  surveyAnswers: SurveyAnswer[] | any= [];
 
   private startSurveyListener: () => void;
   private inputListener: () => void;
@@ -99,7 +99,7 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
             if (surveyFormSection.id === (event.target as Element).id) {
               if (surveyFormSection.classList.contains("opacity-25")) {
                 surveyFormSection.classList.remove("opacity-25");
-                let surveyAnswersObject: SurveyAnswer | any = {
+                let surveyAnswersObject: SurveyAnswer = {
                   ans: undefined,
                   endTime: undefined,
                   local_id: undefined,
@@ -111,7 +111,6 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
                   start_time: Date.now().toString(),
                   survey_id: surveyFormSection.getAttribute('data-section-id')
                 }
-                console.log("DA", surveyFormSection.getAttribute('data-section-id'))
                 if (!this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveyFormSection.getAttribute('data-section-id'))) {
                   this.surveyAnswers = this.surveyAnswers.concat(surveyAnswersObject);
                 };
@@ -131,7 +130,6 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
           let surveySubmissionTriggers: HTMLCollectionOf<Element> = document.getElementsByClassName("submit-survey");
           for (const surveySubmissionTrigger of surveySubmissionTriggers) {
             if (surveySubmissionTrigger.id === (event.target as Element).id) {
-              console.log(event.target)
               /* 
               Collect Submission 
               Disable Button
@@ -159,8 +157,6 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
     this.inputListener = this.renderer.listen(document, 'input', event => {
 
       if (event.target instanceof HTMLElement) {
-        console.log(event.target.value);
-
         /* 
         Find matching entry in survey responses
         if one does not exist
@@ -182,18 +178,23 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
 
             if (!this.surveyAnswers[surveyAnswersObjectIndex].ans) {
               /*  first time, ans object non existent */
-              this.surveyAnswers[surveyAnswersObjectIndex].ans = [answerObject];
-
+              this.surveyAnswers[surveyAnswersObjectIndex].ans = new Array(answerObject);
             } else {
-              this.surveyAnswers[surveyAnswersObjectIndex].ans.map(answer => {
-                if (answer.column_match == answerObject.column_match && answer.q_id == answerObject.q_id) {
-                  answer.q_ans = answerObject.q_ans;
-                }
-              })
+
+              if(this.surveyAnswers[surveyAnswersObjectIndex].ans.filter(_ans => _ans.q_id == answerObject.q_id).length > 0) {
+                this.surveyAnswers[surveyAnswersObjectIndex].ans.map(answer => {
+                  if (answer.column_match == answerObject.column_match && answer.q_id == answerObject.q_id) {
+                    answer.q_ans = answerObject.q_ans;
+                    this.surveyAnswers[surveyAnswersObjectIndex].ans = this.surveyAnswers[surveyAnswersObjectIndex].ans;
+                    console.log(this.surveyAnswers[surveyAnswersObjectIndex].ans);
+                  }
+                })
+              } else {
+                this.surveyAnswers[surveyAnswersObjectIndex].ans = JSON.parse(JSON.stringify(this.surveyAnswers[surveyAnswersObjectIndex].ans.concat(answerObject)));
+                console.log(this.surveyAnswers[surveyAnswersObjectIndex].ans);
+              }
             }
           }
-
-          console.table(this.surveyAnswers[surveyAnswersObjectIndex]);
         }
       };
 
