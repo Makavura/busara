@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import * as moment from 'moment';
 import { NgxSpinnerService } from "ngx-spinner";
 import { ResponseSubmissionAns } from 'src/lib/node.interfaces';
 import { TreeProcessor } from '../../lib/nodes';
@@ -108,7 +109,7 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
                     lat: undefined,
                     lon: undefined
                   },
-                  start_time: Date.now().toString(),
+                  start_time: moment().format(),
                   survey_id: surveyFormSection.getAttribute('data-section-id')
                 }
                 if (!this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveyFormSection.getAttribute('data-section-id'))) {
@@ -137,7 +138,7 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
               if (this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveySubmissionTrigger.getAttribute('data-section-id'))) {
                 const surveyAnswersObjectIndex = this.surveyAnswers.findIndex(surveyAnswer => surveyAnswer.survey_id === surveySubmissionTrigger.getAttribute('data-section-id'));
                 if (surveyAnswersObjectIndex > -1) {
-                  this.surveyAnswers[surveyAnswersObjectIndex].endTime = Date.now().toString();
+                  this.surveyAnswers[surveyAnswersObjectIndex].endTime = moment().format();
                   this.renderer.setStyle((event.target as Element), "pointer-events", "none");
                   (event.target as Element).classList.remove("bg-indigo-600");
                   (event.target as Element).classList.add("bg-gray-200");
