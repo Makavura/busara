@@ -104,7 +104,7 @@ export class TreeProcessor {
                                         </span>
                                         <input type="text" data-section-id="${section_id}" name="company-website" data-column-match="${question.column_match}" data-q-id="${question.id}"  id="${question.column_match}" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300" placeholder="${question.text}">
                                     </div>
-                                    <span class="text-xs text-red-300 py-2">
+                                    <span data-column-match="${question.column_match}" data-q-id="${question.id}" class="text-xs text-red-300 py-2 error-msg" style="display: none;">
                                     ${question.error_message}
                                     </span>
                                 </div>
@@ -133,7 +133,7 @@ export class TreeProcessor {
                                         </span>
                                         <input type="tel" data-section-id="${section_id}" name="${question.description}" id="${question.column_match}" data-column-match="${question.column_match}" data-q-id="${question.id}" class="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300" placeholder="${question.text}">
                                     </div>
-                                    <span class="text-xs text-red-300 py-2">
+                                    <span data-column-match="${question.column_match}" data-q-id="${question.id}" class="text-xs text-red-300 py-2 error-msg" style="display: none;">
                                             ${question.error_message}
                                     </span>
                                 </div>

@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as moment from 'moment';
 import { NgxSpinnerService } from "ngx-spinner";
@@ -183,28 +183,46 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
           q_id: (event.target as Element).getAttribute('data-q-id'),
           column_match: (event.target as Element).getAttribute('data-column-match')
         }
+        let inputErrorMsgWarnings: HTMLCollectionOf<Element> = document.getElementsByClassName("error-msg");
 
-        if (this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === (event.target as Element).getAttribute('data-section-id'))) {
-          /*  Matching survey answer found  */
-          const surveyAnswersObjectIndex = this.surveyAnswers.findIndex(surveyAnswer => surveyAnswer.survey_id === (event.target as Element).getAttribute('data-section-id'));
-          if (surveyAnswersObjectIndex > -1) {
+        if (event.target.value.length < 1) {
 
-            if (!this.surveyAnswers[surveyAnswersObjectIndex].ans) {
-              /*  first time, ans object non existent */
-              this.surveyAnswers[surveyAnswersObjectIndex].ans = new Array(answerObject);
-            } else {
+          for (const inputErrorMsgWarning of inputErrorMsgWarnings) {
+            if(inputErrorMsgWarning.getAttribute('data-q-id') == answerObject.q_id && inputErrorMsgWarning.getAttribute('data-column-match')){
+              inputErrorMsgWarning.setAttribute("style", "display: block");
+            }
+          }
 
-              if (this.surveyAnswers[surveyAnswersObjectIndex].ans.filter(_ans => _ans.q_id == answerObject.q_id).length > 0) {
-                this.surveyAnswers[surveyAnswersObjectIndex].ans.map(answer => {
-                  if (answer.column_match == answerObject.column_match && answer.q_id == answerObject.q_id) {
-                    answer.q_ans = answerObject.q_ans;
-                    this.surveyAnswers[surveyAnswersObjectIndex].ans = this.surveyAnswers[surveyAnswersObjectIndex].ans;
-                    console.log(this.surveyAnswers[surveyAnswersObjectIndex].ans);
-                  }
-                })
+        } else {
+
+
+          for (const inputErrorMsgWarning of inputErrorMsgWarnings) {
+            if(inputErrorMsgWarning.getAttribute('data-q-id') == answerObject.q_id && inputErrorMsgWarning.getAttribute('data-column-match')){
+              inputErrorMsgWarning.setAttribute("style", "display: none");
+            }
+          }
+
+
+          if (this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === (event.target as Element).getAttribute('data-section-id'))) {
+            /*  Matching survey answer found  */
+            const surveyAnswersObjectIndex = this.surveyAnswers.findIndex(surveyAnswer => surveyAnswer.survey_id === (event.target as Element).getAttribute('data-section-id'));
+            if (surveyAnswersObjectIndex > -1) {
+
+              if (!this.surveyAnswers[surveyAnswersObjectIndex].ans) {
+                /*  first time, ans object non existent */
+                this.surveyAnswers[surveyAnswersObjectIndex].ans = new Array(answerObject);
               } else {
-                this.surveyAnswers[surveyAnswersObjectIndex].ans = JSON.parse(JSON.stringify(this.surveyAnswers[surveyAnswersObjectIndex].ans.concat(answerObject)));
-                console.log(this.surveyAnswers[surveyAnswersObjectIndex].ans);
+
+                if (this.surveyAnswers[surveyAnswersObjectIndex].ans.filter(_ans => _ans.q_id == answerObject.q_id).length > 0) {
+                  this.surveyAnswers[surveyAnswersObjectIndex].ans.map(answer => {
+                    if (answer.column_match == answerObject.column_match && answer.q_id == answerObject.q_id) {
+                      answer.q_ans = answerObject.q_ans;
+                      this.surveyAnswers[surveyAnswersObjectIndex].ans = this.surveyAnswers[surveyAnswersObjectIndex].ans;
+                    }
+                  })
+                } else {
+                  this.surveyAnswers[surveyAnswersObjectIndex].ans = JSON.parse(JSON.stringify(this.surveyAnswers[surveyAnswersObjectIndex].ans.concat(answerObject)));
+                }
               }
             }
           }
@@ -212,9 +230,6 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
       };
 
     });
-
-
-
   }
 
   /* 
@@ -229,7 +244,20 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
   */
 
   answerSurvey(surveyResponse: SurveyAnswer) {
-    console.log(surveyResponse);
+
+    let surveyResponseSubmission = [];
+    surveyResponseSubmission = surveyResponseSubmission.concat(surveyResponse);
+    console.log(surveyResponseSubmission);
+    this.http.post(`http://fullstack-role.busara.io/api/v1/recruitment/answers/submit`, JSON.parse(JSON.stringify(surveyResponseSubmission))).subscribe((response) => {
+      console.log(response);
+    },
+      (err) => {
+        if (err) {
+          console.warn(err);
+        }
+      }
+    )
+
   }
 
   ngOnDestroy() {
