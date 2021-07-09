@@ -10,11 +10,18 @@ export class AppComponent {
   title = 'Busara';
 
   
-  constructor(private authService: AuthenticationService) { }
+  constructor(private authService: AuthenticationService) {
+    this.isLoggedIn = this.authService.isLoggedIn();
+   }
 
   isLoggedIn: Boolean;
 
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
+
+  }
+
+  signOut(){
+    this.authService.logout();
   }
 }
