@@ -17,7 +17,7 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
   isLoading: Boolean;
   options: {};
   nodeSections;
-  surveyAnswers: SurveyAnswer[] | any= [];
+  surveyAnswers: SurveyAnswer[] | any = [];
 
   private startSurveyListener: () => void;
   private inputListener: () => void;
@@ -142,6 +142,18 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
                   this.renderer.setStyle((event.target as Element), "pointer-events", "none");
                   (event.target as Element).classList.remove("bg-indigo-600");
                   (event.target as Element).classList.add("bg-gray-200");
+                  let treeNodeSections: HTMLCollectionOf<Element> = document.getElementsByClassName("tree-node-section");
+                  for (const treeNode of treeNodeSections) {
+                    if (treeNode.id === (event.target as Element).id) {
+                      treeNode.setAttribute("style", "display: none");
+                    }
+                  }
+                  let nodeTogglers: HTMLCollectionOf<Element> = document.getElementsByClassName("tree-node-toggler");
+                  for (const nodeToggler of nodeTogglers) {
+                    if (nodeToggler.id === (event.target as Element).id) {
+                      nodeToggler.classList.remove("rotate-90");
+                    }
+                  }
                   this.answerSurvey(this.surveyAnswers[surveyAnswersObjectIndex]);
                 } else {
                   console.warn(`cannot find survey submission answer after initiation`);
@@ -182,7 +194,7 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
               this.surveyAnswers[surveyAnswersObjectIndex].ans = new Array(answerObject);
             } else {
 
-              if(this.surveyAnswers[surveyAnswersObjectIndex].ans.filter(_ans => _ans.q_id == answerObject.q_id).length > 0) {
+              if (this.surveyAnswers[surveyAnswersObjectIndex].ans.filter(_ans => _ans.q_id == answerObject.q_id).length > 0) {
                 this.surveyAnswers[surveyAnswersObjectIndex].ans.map(answer => {
                   if (answer.column_match == answerObject.column_match && answer.q_id == answerObject.q_id) {
                     answer.q_ans = answerObject.q_ans;
