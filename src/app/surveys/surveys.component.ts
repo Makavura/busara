@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgxSpinnerService } from "ngx-spinner";
+import { ResponseSubmissionAns } from 'src/lib/node.interfaces';
 import { TreeProcessor } from '../../lib/nodes';
 
 @Component({
@@ -46,13 +47,11 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
     this.startSurveyListener = this.renderer.listen(document, 'click', event => {
 
       if (event.target instanceof HTMLElement) {
-        // console.log(event.target);
-        console.log((event.target as Element).classList.contains("tree-parent"), (event.target as Element).classList.contains("submit-survey"));
         /* 
         Node Tree Toggling
         */
 
-        if ((event.target as Element).classList.contains("tree-parent") && !(event.target as Element).classList.contains("submit-survey") ) {
+        if ((event.target as Element).classList.contains("tree-parent") && !(event.target as Element).classList.contains("submit-survey")) {
 
           /* 
           Render tree section
@@ -74,9 +73,9 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
           Toggle SVG to show status of viewing section
           */
           let nodeTogglers: HTMLCollectionOf<Element> = document.getElementsByClassName("tree-node-toggler");
-          for(const nodeToggler of nodeTogglers) {
-            if(nodeToggler.id === (event.target as Element).id){  
-              if(nodeToggler.classList.contains("rotate-90")){
+          for (const nodeToggler of nodeTogglers) {
+            if (nodeToggler.id === (event.target as Element).id) {
+              if (nodeToggler.classList.contains("rotate-90")) {
                 nodeToggler.classList.remove("rotate-90");
               } else {
                 nodeToggler.classList.add("rotate-90");
@@ -96,11 +95,11 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
         */
         if ((event.target as Element).classList.contains("begin-survey")) {
           let surveyFormSections: HTMLCollectionOf<Element> = document.getElementsByClassName("survey-form-section");
-          for(const surveyFormSection of surveyFormSections){
-            if(surveyFormSection.id === (event.target as Element).id){
-              if(surveyFormSection.classList.contains("opacity-25")) {
+          for (const surveyFormSection of surveyFormSections) {
+            if (surveyFormSection.id === (event.target as Element).id) {
+              if (surveyFormSection.classList.contains("opacity-25")) {
                 surveyFormSection.classList.remove("opacity-25");
-                let surveyAnswersObject:SurveyAnswer = {
+                let surveyAnswersObject: SurveyAnswer | any = {
                   ans: undefined,
                   endTime: undefined,
                   local_id: undefined,
@@ -113,13 +112,13 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
                   survey_id: surveyFormSection.getAttribute('data-section-id')
                 }
                 console.log("DA", surveyFormSection.getAttribute('data-section-id'))
-                if(!this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveyFormSection.getAttribute('data-section-id'))){
+                if (!this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveyFormSection.getAttribute('data-section-id'))) {
                   this.surveyAnswers = this.surveyAnswers.concat(surveyAnswersObject);
                 };
                 this.renderer.setStyle((event.target as Element), "pointer-events", "none");
                 (event.target as Element).classList.remove("bg-indigo-600");
                 (event.target as Element).classList.add("bg-gray-200");
-              } 
+              }
             };
           };
         };
@@ -128,21 +127,19 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
         Survey Submission Event
         */
 
-        if ((event.target as Element).classList.contains("submit-survey")) { 
+        if ((event.target as Element).classList.contains("submit-survey")) {
           let surveySubmissionTriggers: HTMLCollectionOf<Element> = document.getElementsByClassName("submit-survey");
-          for(const surveySubmissionTrigger of surveySubmissionTriggers){ 
-            if(surveySubmissionTrigger.id === (event.target as Element).id) {
+          for (const surveySubmissionTrigger of surveySubmissionTriggers) {
+            if (surveySubmissionTrigger.id === (event.target as Element).id) {
               console.log(event.target)
-              console.table(this.surveyAnswers);
               /* 
               Collect Submission 
               Disable Button
               */
-              if(this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveySubmissionTrigger.getAttribute('data-section-id'))){
+              if (this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveySubmissionTrigger.getAttribute('data-section-id'))) {
                 const surveyAnswersObjectIndex = this.surveyAnswers.findIndex(surveyAnswer => surveyAnswer.survey_id === surveySubmissionTrigger.getAttribute('data-section-id'));
-                console.log("FOUND", surveyAnswersObjectIndex)
-                if(surveyAnswersObjectIndex > -1){
-                  this.surveyAnswers[surveyAnswersObjectIndex].endTime = Date.now().toString();                  
+                if (surveyAnswersObjectIndex > -1) {
+                  this.surveyAnswers[surveyAnswersObjectIndex].endTime = Date.now().toString();
                   this.renderer.setStyle((event.target as Element), "pointer-events", "none");
                   (event.target as Element).classList.remove("bg-indigo-600");
                   (event.target as Element).classList.add("bg-gray-200");
@@ -159,13 +156,50 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
 
     });
 
-    this.inputListener = this.renderer.listen(document, 'change', event => {
+    this.inputListener = this.renderer.listen(document, 'input', event => {
 
       if (event.target instanceof HTMLElement) {
-        console.log(event.target);
+        console.log(event.target.value);
+
+        /* 
+        Find matching entry in survey responses
+        if one does not exist
+        append new
+        if exists
+        update q_ans
+        */
+
+        let answerObject: ResponseSubmissionAns = {
+          q_ans: event.target.value,
+          q_id: (event.target as Element).getAttribute('data-q-id'),
+          column_match: (event.target as Element).getAttribute('data-column-match')
+        }
+
+        if (this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === (event.target as Element).getAttribute('data-section-id'))) {
+          /*  Matching survey answer found  */
+          const surveyAnswersObjectIndex = this.surveyAnswers.findIndex(surveyAnswer => surveyAnswer.survey_id === (event.target as Element).getAttribute('data-section-id'));
+          if (surveyAnswersObjectIndex > -1) {
+
+            if (!this.surveyAnswers[surveyAnswersObjectIndex].ans) {
+              /*  first time, ans object non existent */
+              this.surveyAnswers[surveyAnswersObjectIndex].ans = [answerObject];
+
+            } else {
+              this.surveyAnswers[surveyAnswersObjectIndex].ans.map(answer => {
+                if (answer.column_match == answerObject.column_match && answer.q_id == answerObject.q_id) {
+                  answer.q_ans = answerObject.q_ans;
+                }
+              })
+            }
+          }
+
+          console.table(this.surveyAnswers[surveyAnswersObjectIndex]);
+        }
       };
 
     });
+
+
 
   }
 
