@@ -100,6 +100,7 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
             if (surveyFormSection.id === (event.target as Element).id) {
               if (surveyFormSection.classList.contains("opacity-25")) {
                 surveyFormSection.classList.remove("opacity-25");
+
                 let surveyAnswersObject: SurveyAnswer = {
                   ans: undefined,
                   endTime: undefined,
@@ -112,6 +113,16 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
                   start_time: moment().format(),
                   survey_id: surveyFormSection.getAttribute('data-section-id')
                 }
+
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition((position) => {
+                    surveyAnswersObject.location.accuracy = position.coords.accuracy
+                    surveyAnswersObject.location.lat = position.coords.latitude
+                    surveyAnswersObject.location.lon = position.coords.longitude
+                  });
+                } 
+
+
                 if (!this.surveyAnswers.find(surveyAnswer => surveyAnswer.survey_id === surveyFormSection.getAttribute('data-section-id'))) {
                   this.surveyAnswers = this.surveyAnswers.concat(surveyAnswersObject);
                 };
