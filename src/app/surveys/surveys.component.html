@@ -10,21 +10,27 @@
                 </h3>
                 <p class="mt-1 max-w-2xl text-sm text-gray-500">
                     {{ _form.numchild}} Questions
-                </p>    
+                </p>
                 <p class="mt-1 max-w-2xl text-sm text-gray-500">
-                    Created on: {{ _form.created | date }} 
-                </p>    
+                    Created on: {{ _form.created | date }}
+                </p>
                 <p class="mt-1 max-w-2xl text-sm text-gray-500">
-                    Valid until: {{ _form.valid_to | date }} 
-                </p>    
+                    Valid until: {{ _form.valid_to | date }}
+                </p>
+                <button class="tree-node-toggler">
+                    Toggle View
+                </button>
                 <p class="mt-1 max-w-2xl text-sm text-gray-500">
-                    Created by: {{ _form.creator.email }} 
-                </p>    
+                    Created by: {{ _form.creator.email }}
+
+                    
+                </p>
             </div>
 
             <div  class="" [innerHTML]="nodeSections">
                 
             </div>            
+
         </div>
     </div>
 </div>
