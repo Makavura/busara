@@ -21,14 +21,9 @@ export class ProfileComponent implements OnInit {
 
     this.isLoading = true;
     this.spinner.show();
-
-    const headers = new HttpHeaders({ 'Authorization': "Token " });
-
-    this.http.get(`http://fullstack-role.busara.io/api/v1/users/current-user`, { headers, observe: 'response' }).subscribe((response) => {
+    this.http.get(`http://fullstack-role.busara.io/api/v1/users/current-user`, { observe: 'response' }).subscribe((response) => {
 
       this.userProfile = response.body;
-
-      console.log(this.userProfile)
       this.isLoading = false;
       this.spinner.hide();
 

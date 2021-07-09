@@ -32,8 +32,7 @@ export class SurveysComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.isLoading = true;
     this.spinner.show();
-    const headers = new HttpHeaders({ 'Authorization': "Token " });
-    this.http.get(`http://fullstack-role.busara.io/api/v1/recruitment/forms/?node_type=Both`, { headers, observe: 'response' }).subscribe((response) => {
+    this.http.get(`http://fullstack-role.busara.io/api/v1/recruitment/forms/?node_type=Both`, { observe: 'response' }).subscribe((response) => {
       this.forms = response.body["forms"];
       let treeProcessor = new TreeProcessor(this.forms[0]["pages"]);
       this.nodeSections = this.sanitizer.bypassSecurityTrustHtml(treeProcessor.renderTree());
